@@ -5,13 +5,13 @@ CREATE TABLE users (
     password VARCHAR(100) NOT NULL,
     email VARCHAR(200) UNIQUE,
     role VARCHAR(50) NOT NULL,   -- e.g., admin, cashier, etc.
-    lang_code VARCHAR(10)  NOT NULL,
+    lang_code VARCHAR(10) NOT NULL,
     firstname VARCHAR(50) NOT NULL,
-    lastname  VARCHAR(50),
+    lastname VARCHAR(50),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
---Categories : Stores product categories.
+-- Categories table: Stores product categories.
 CREATE TABLE categories (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE products (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Orders: Stores order information.
+-- Orders table: Stores order information.
 CREATE TABLE orders (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id),
@@ -42,7 +42,7 @@ CREATE TABLE orders (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Order_Items: Stores details about the items in each order.
+-- Order_Items table: Stores details about the items in each order.
 CREATE TABLE order_items (
     id SERIAL PRIMARY KEY,
     order_id INTEGER REFERENCES orders(id),
@@ -51,7 +51,7 @@ CREATE TABLE order_items (
     price DECIMAL(10, 2) NOT NULL
 );
 
--- Suppliers: Stores supplier information.
+-- Suppliers table: Stores supplier information.
 CREATE TABLE suppliers (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -59,27 +59,25 @@ CREATE TABLE suppliers (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Product_Supplier: Stores the relationship between products and suppliers.
+-- Product_Supplier table: Stores the relationship between products and suppliers.
 CREATE TABLE product_supplier (
     id SERIAL PRIMARY KEY,
     product_id INTEGER REFERENCES products(id),
     supplier_id INTEGER REFERENCES suppliers(id)
 );
 
--- Languages: Stores available languages for the system.
+-- Languages table: Stores available languages for the system.
 CREATE TABLE languages (
-    id SERIAL PRIMARY KEY,
-    lang_code VARCHAR(10) NOT NULL UNIQUE, -- e.g., en, fa, ps
+    lang_code VARCHAR(10) PRIMARY KEY, -- e.g., en, fa, ps
     name VARCHAR(50) NOT NULL
 );
 
--- Translations: Stores translations for various text elements in the system.
+-- Translations table: Stores translations for various text elements in the system.
 CREATE TABLE translations (
-    id SERIAL PRIMARY KEY,
     lang_code VARCHAR(10) REFERENCES languages(lang_code),
     table_name VARCHAR(50) NOT NULL,
     column_name VARCHAR(50) NOT NULL,
     row_id INTEGER NOT NULL,
     translation TEXT NOT NULL,
-    UNIQUE(lang_code, table_name, column_name, row_id)
+    PRIMARY KEY (lang_code, table_name, column_name, row_id)
 );

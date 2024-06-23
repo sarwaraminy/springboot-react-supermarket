@@ -1,32 +1,26 @@
 package com.shops.supermarket.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "translations")
+@IdClass(TranslationId.class)
 public class Translation {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @ManyToOne
-    @JoinColumn(name = "lang_code")
+    @JoinColumn(name = "lang_code", referencedColumnName = "lang_code")
     private Language language;
 
+    @Id
     @Column(name = "table_name", nullable = false)
     private String tableName;
 
+    @Id
     @Column(name = "column_name", nullable = false)
     private String columnName;
 
+    @Id
     @Column(name = "row_id", nullable = false)
     private int rowId;
 
@@ -34,18 +28,8 @@ public class Translation {
     private String translation;
 
     // Getters and Setters
-    // ...
-
-    public Long getId() {
-        return this.id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Language getLanguage() {
-        return this.language;
+        return language;
     }
 
     public void setLanguage(Language language) {
@@ -53,7 +37,7 @@ public class Translation {
     }
 
     public String getTableName() {
-        return this.tableName;
+        return tableName;
     }
 
     public void setTableName(String tableName) {
@@ -61,7 +45,7 @@ public class Translation {
     }
 
     public String getColumnName() {
-        return this.columnName;
+        return columnName;
     }
 
     public void setColumnName(String columnName) {
@@ -69,7 +53,7 @@ public class Translation {
     }
 
     public int getRowId() {
-        return this.rowId;
+        return rowId;
     }
 
     public void setRowId(int rowId) {
@@ -77,11 +61,10 @@ public class Translation {
     }
 
     public String getTranslation() {
-        return this.translation;
+        return translation;
     }
 
     public void setTranslation(String translation) {
         this.translation = translation;
     }
-
 }
