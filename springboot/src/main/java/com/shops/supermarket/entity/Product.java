@@ -89,13 +89,13 @@ public class Product {
         this.description = description;
     }
 
-    public Category getCategory() {
-        return this.category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
+    //public Category getCategory() {
+    //    return this.category;
+    //}
+//
+    //public void setCategory(Category category) {
+    //    this.category = category;
+    //}
 
     public BigDecimal getPrice() {
         return this.price;
@@ -128,21 +128,21 @@ public class Product {
     public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
     }
-
-    public List<OrderItem> getOrderItems() {
-        return this.orderItems;
-    }
-
-    public void setOrderItems(List<OrderItem> orderItems) {
-        this.orderItems = orderItems;
-    }
-
-    public List<ProductSupplier> getProductSuppliers() {
-        return this.productSuppliers;
-    }
-
-    public void setProductSuppliers(List<ProductSupplier> productSuppliers) {
-        this.productSuppliers = productSuppliers;
-    }
-
+//
+    //public List<OrderItem> getOrderItems() {
+    //    return this.orderItems;
+    //}
+//
+    //public void setOrderItems(List<OrderItem> orderItems) {
+    //    this.orderItems = orderItems;
+    //}
+//
+    //public List<ProductSupplier> getProductSuppliers() {
+    //    return this.productSuppliers;
+    //}
+//
+    //public void setProductSuppliers(List<ProductSupplier> productSuppliers) {
+    //    this.productSuppliers = productSuppliers;
+    //}
+//
 }
