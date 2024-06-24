@@ -1,16 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+
+import { useUserEmail } from '../../auth/useUserEmail'
 
 const OrderList = () => {
     const [orders, setOrders] = useState([]);
 
+    const loggedEmail = useUserEmail(); // send the logged in user eamil to check user language
+
     useEffect(() => {
-        fetch('/api/orders')
-            .then(response => response.json())
-            .then(data => setOrders(data));
+        fetchOrders();
     }, []);
 
+    const fetchOrders = async () => {
+        try{
+            const response = await axios.get(`${process.env.REACT_APP_API_SERVER}/api/orders/${loggedEmail}`);
+            setOrders(response.data);
+        } catch (error){
+            console.error('Error fetching products:', error);
+        }
+    };
+    
     return (
         <div>
             <h1>Orders</h1>

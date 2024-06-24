@@ -4,20 +4,22 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class TranslationId implements Serializable {
-    private String language;
+    private String langCode;
     private String tableName;
     private String columnName;
-    private int rowId;
+    private Long rowId;
 
     // Getters and Setters
     // hashCode and equals methods
-    public String getLanguage() {
-        return language;
+
+    public String getLangCode() {
+        return this.langCode;
     }
 
-    public void setLanguage(String language) {
-        this.language = language;
+    public void setLangCode(String langCode) {
+        this.langCode = langCode;
     }
+    
 
     public String getTableName() {
         return tableName;
@@ -35,11 +37,11 @@ public class TranslationId implements Serializable {
         this.columnName = columnName;
     }
 
-    public int getRowId() {
+    public Long getRowId() {
         return rowId;
     }
 
-    public void setRowId(int rowId) {
+    public void setRowId(Long rowId) {
         this.rowId = rowId;
     }
 
@@ -49,13 +51,13 @@ public class TranslationId implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         TranslationId that = (TranslationId) o;
         return rowId == that.rowId && 
-               Objects.equals(language, that.language) && 
+               Objects.equals(langCode, that.langCode) && 
                Objects.equals(tableName, that.tableName) && 
                Objects.equals(columnName, that.columnName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(language, tableName, columnName, rowId);
+        return Objects.hash(langCode, tableName, columnName, rowId);
     }
 }

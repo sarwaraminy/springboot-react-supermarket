@@ -1,11 +1,9 @@
 import React from 'react';
-import NavigationBar from './NavigationBar';
+
 
 const Dashboard = () => {
     return (
-        <>
-            <NavigationBar />
-            <div className="container mt-4">
+            <div className="container-fluid mt-4">
                 <div className="row mb-4">
                     <div className="col">
                         <div className="card">
@@ -59,7 +57,6 @@ const Dashboard = () => {
                     </div>
                 </div>
             </div>
-        </>
     );
 }
 

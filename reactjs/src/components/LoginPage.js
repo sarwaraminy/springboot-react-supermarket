@@ -25,7 +25,7 @@ export const LoginPage = () => {
                 const data = await response.json();
                 // Handle successful login (e.g, save token, navigate to dashboard)
                 localStorage.setItem('authToken', data.token);
-                //localStorage.setItem('userEmail', emailValue);
+                localStorage.setItem('userEmail', emailValue);
                 //localStorage.setItem('userRole', JSON.stringify(data.roles));
                 //console.log(data);
                 navigate('/', {

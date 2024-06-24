@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Form, Button } from 'react-bootstrap';
 
 const SupplierForm = () => {
     const { id } = useParams();
@@ -39,30 +38,23 @@ const SupplierForm = () => {
     }
 
     return (
-        <div>
-            <h1>{id ? 'Edit Supplier' : 'Add New Supplier'}</h1>
-            <Form onSubmit={handleSubmit}>
-                <Form.Group controlId="name">
-                    <Form.Label>Name</Form.Label>
-                    <Form.Control
-                        type="text"
-                        name="name"
-                        value={supplier.name}
-                        onChange={handleChange}
-                        required
-                    />
-                </Form.Group>
-                <Form.Group controlId="contact_info">
-                    <Form.Label>Contact Info</Form.Label>
-                    <Form.Control
-                        as="textarea"
-                        name="contact_info"
-                        value={supplier.contact_info}
-                        onChange={handleChange}
-                    />
-                </Form.Group>
-                <Button variant="primary" type="submit">Save</Button>
-            </Form>
+        <div className="container-fluid">
+            <h1>Add New Supplier</h1>
+            <form id="category-form" onSubmit={handleSubmit}>
+                <div className="form-row align-items-end">
+                    <div className="form-group col-md-3">
+                        <label htmlFor="name">Name</label>
+                        <input type="text" className="form-control" id="name" name="name" value={supplier.name} onChange={handleChange} required />
+                    </div>
+                    <div className="form-group col-md-6">
+                        <label htmlFor="contact">Contact Info</label>
+                        <textarea name="contact" id="contact" className="form-control" rows={3} value={supplier.contact_info} onChange={handleChange} />
+                    </div>
+                    <div className="form-group col-md-3">
+                        <button type="submit" className="btn btn-primary">Add Supplier</button>
+                    </div>
+                </div>
+            </form>
         </div>
     );
 }

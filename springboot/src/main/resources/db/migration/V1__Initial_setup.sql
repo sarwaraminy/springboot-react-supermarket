@@ -77,7 +77,7 @@ CREATE TABLE translations (
     lang_code VARCHAR(10) REFERENCES languages(lang_code),
     table_name VARCHAR(50) NOT NULL,
     column_name VARCHAR(50) NOT NULL,
-    row_id INTEGER NOT NULL,
+    row_id BIGINT NOT NULL,
     translation TEXT NOT NULL,
     PRIMARY KEY (lang_code, table_name, column_name, row_id)
 );

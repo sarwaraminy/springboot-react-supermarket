@@ -1,20 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Table, Button } from 'react-bootstrap';
+import axios from 'axios';
+
+import { useUserEmail } from '../../auth/useUserEmail'
 
 const OrderDetail = () => {
     const { id } = useParams();
     const [order, setOrder] = useState({});
     const [orderItems, setOrderItems] = useState([]);
+    const loggedEmail = useUserEmail(); // send the logged in user eamil to check user language
 
     useEffect(() => {
-        fetch(`/api/orders/${id}`)
-            .then(response => response.json())
-            .then(data => {
-                setOrder(data.order);
-                setOrderItems(data.orderItems);
-            });
+        fetchOrderDetail();
     }, [id]);
+
+    const fetchOrderDetail = async () => {
+        try{
+            const response = await axios.get(`${process.env.REACT_APP_API_SERVER}/api/orders/${id}/${loggedEmail}`);
+            setOrder(response.data);
+            setOrderItems(response.data.orderItems);
+        } catch (error){
+            console.error('Error fetching products:', error);
+        }
+    };
 
     return (
         <div>

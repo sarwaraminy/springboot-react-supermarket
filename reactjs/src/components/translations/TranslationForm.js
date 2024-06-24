@@ -1,17 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Form, Button } from 'react-bootstrap';
 
 const TranslationForm = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+
     const [translation, setTranslation] = useState({
-        lang_code: '',
-        table_name: '',
-        column_name: '',
-        row_id: '',
+        tableName: 'products',
+        columnName: '',
+        rowId: '',
         translation: ''
     });
+    const [columns, setColumns] = useState([
+        { value: 'name', label: 'product.name' },
+        { value: 'description', label: 'product.description' }
+    ]);
+
+    const tableColumns = {
+        products: [
+            { value: 'name', label: 'product.name' },
+            { value: 'description', label: 'product.description' }
+        ],
+        categories: [
+            { value: 'name', label: 'category.name' },
+            { value: 'description', label: 'category.description' }
+        ],
+        orders: [
+            { value: 'status', label: 'order.status' }
+        ],
+        suppliers: [
+            { value: 'name', label: 'supplier.name' },
+            { value: 'contactInfo', label: 'supplier.contactinfo' }
+        ]
+    };
 
     useEffect(() => {
         if (id) {
@@ -22,9 +43,14 @@ const TranslationForm = () => {
     }, [id]);
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setTranslation({ ...translation, [name]: value });
-    }
+        const { id, value } = e.target;
+        setTranslation({ ...translation, [id]: value });
+
+        if (id === 'tableName') {
+            setColumns(tableColumns[value] || []);
+            setTranslation({ ...translation, tableName: value, columnName: '' });
+        }
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -42,61 +68,49 @@ const TranslationForm = () => {
     }
 
     return (
-        <div>
-            <h1>{id ? 'Edit Translation' : 'Add New Translation'}</h1>
-            <Form onSubmit={handleSubmit}>
-                <Form.Group controlId="lang_code">
-                    <Form.Label>Language Code</Form.Label>
-                    <Form.Control
-                        type="text"
-                        name="lang_code"
-                        value={translation.lang_code}
-                        onChange={handleChange}
-                        required
-                    />
-                </Form.Group>
-                <Form.Group controlId="table_name">
-                    <Form.Label>Table Name</Form.Label>
-                    <Form.Control
-                        type="text"
-                        name="table_name"
-                        value={translation.table_name}
-                        onChange={handleChange}
-                        required
-                    />
-                </Form.Group>
-                <Form.Group controlId="column_name">
-                    <Form.Label>Column Name</Form.Label>
-                    <Form.Control
-                        type="text"
-                        name="column_name"
-                        value={translation.column_name}
-                        onChange={handleChange}
-                        required
-                    />
-                </Form.Group>
-                <Form.Group controlId="row_id">
-                    <Form.Label>Row ID</Form.Label>
-                    <Form.Control
-                        type="number"
-                        name="row_id"
-                        value={translation.row_id}
-                        onChange={handleChange}
-                        required
-                    />
-                </Form.Group>
-                <Form.Group controlId="translation">
-                    <Form.Label>Translation</Form.Label>
-                    <Form.Control
-                        as="textarea"
-                        name="translation"
-                        value={translation.translation}
-                        onChange={handleChange}
-                        required
-                    />
-                </Form.Group>
-                <Button variant="primary" type="submit">Save</Button>
-            </Form>
+        <div className="container-fluid">
+            <h1 id="form-title">Add New Translation</h1>
+            <form id="translation-form" onSubmit={handleSubmit}>
+                <div className="form-row align-items-end">
+                    <div className="form-group col">
+                        <label htmlFor="langCode">Language </label>
+                        <select  className="form-control" id="langCode" value={translation.langCode} onChange={handleChange}>
+                            <option value="en">English</option>
+                            <option value="fa">دری</option>
+                            <option value="ps">پشتو</option>
+                        </select>
+                    </div>
+                    <div className="form-group col">
+                        <label htmlFor="tableName">Table Name </label>
+                        <select  className="form-control" id="tableName" value={translation.tableName} onChange={handleChange}>
+                            <option value="products">Product Data Table</option>
+                            <option value="categories">Categories Data Table</option>
+                            <option value="orders">Orders Data Table</option>
+                            <option value="suppliers">Suppliers Data Table</option>
+                        </select>
+                    </div>
+                    <div className="form-group col">
+                        <label htmlFor="columnName">Column Name </label>
+                        <select className="form-control" id="columnName" value={translation.columnName} onChange={handleChange}>
+                            <option value="">Please Select a Column</option>
+                            {columns.map(column => (
+                                <option key={column.value} value={column.value}>{column.label}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="form-group col">
+                    <label htmlFor="rowId">Row Id </label>
+                        <input type="number" className="form-control" name="rowId" id="rowId" value={translation.rowId} onChange={handleChange} required />
+                    </div>
+                    <div className="form-group col">
+                        <label htmlFor="translation">Translation</label>
+                        <textarea name="translation" id="translation" className="form-control" rows={3} value={translation.translation} onChange={handleChange} required />
+                    </div>
+                    <div className="form-group col">
+                        <button type="submit" className="btn btn-primary">Add Product</button>
+                    </div>
+                </div>
+            </form>
         </div>
     );
 }

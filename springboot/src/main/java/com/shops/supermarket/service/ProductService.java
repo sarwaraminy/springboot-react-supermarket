@@ -23,7 +23,13 @@ public class ProductService {
 		return productList;
 	}
 
+    //
     public Product getProductById(Long id){
         return productRepository.findById(id).orElse(null);
+    }
+
+    // Create Product
+    public Product saveProduct(Product product){
+        return productRepository.save(product);
     }
 }

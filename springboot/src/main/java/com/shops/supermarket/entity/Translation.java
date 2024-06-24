@@ -1,6 +1,10 @@
 package com.shops.supermarket.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "translations")
@@ -8,9 +12,8 @@ import jakarta.persistence.*;
 public class Translation {
 
     @Id
-    @ManyToOne
-    @JoinColumn(name = "lang_code", referencedColumnName = "lang_code")
-    private Language language;
+    @Column(name = "lang_code")
+    private String langCode;
 
     @Id
     @Column(name = "table_name", nullable = false)
@@ -22,19 +25,20 @@ public class Translation {
 
     @Id
     @Column(name = "row_id", nullable = false)
-    private int rowId;
+    private Long rowId;
 
     @Column(name = "translation", nullable = false)
     private String translation;
 
     // Getters and Setters
-    public Language getLanguage() {
-        return language;
+
+    public String getLangCode() {
+        return this.langCode;
     }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
+    public void setLangCode(String langCode) {
+        this.langCode = langCode;
+    }    
 
     public String getTableName() {
         return tableName;
@@ -52,11 +56,11 @@ public class Translation {
         this.columnName = columnName;
     }
 
-    public int getRowId() {
+    public Long getRowId() {
         return rowId;
     }
 
-    public void setRowId(int rowId) {
+    public void setRowId(Long rowId) {
         this.rowId = rowId;
     }
 

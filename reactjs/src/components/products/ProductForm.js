@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Form, Button } from 'react-bootstrap';
+import { useParams } from 'react-router-dom';
 
-const ProductForm = () => {
+
+const ProductForm = ({ fetchProduct }) => {
     const { id } = useParams();
-    const navigate = useNavigate();
     const [product, setProduct] = useState({
         sku: '',
         name: '',
@@ -41,72 +40,46 @@ const ProductForm = () => {
             },
             body: JSON.stringify(product)
         }).then(() => {
-            navigate('/products');
+            fetchProduct(); // refresh the product list
         });
     }
 
     return (
-        <div>
-            <h1>{id ? 'Edit Product' : 'Add New Product'}</h1>
-            <Form onSubmit={handleSubmit}>
-                <Form.Group controlId="sku">
-                    <Form.Label>SKU</Form.Label>
-                    <Form.Control
-                        type="text"
-                        name="sku"
-                        value={product.sku}
-                        onChange={handleChange}
-                        required
-                    />
-                </Form.Group>
-                <Form.Group controlId="name">
-                    <Form.Label>Name</Form.Label>
-                    <Form.Control
-                        type="text"
-                        name="name"
-                        value={product.name}
-                        onChange={handleChange}
-                        required
-                    />
-                </Form.Group>
-                <Form.Group controlId="category_id">
-                    <Form.Label>Category</Form.Label>
-                    <Form.Control
-                        as="select"
-                        name="category_id"
-                        value={product.category_id}
-                        onChange={handleChange}
-                        required
-                    >
+        <div className="container-fluid">
+        <h1 id="form-title">Add New Product</h1>
+        <form id="product-form" onSubmit={handleSubmit}>
+            <div className="form-row align-items-end">
+                <div className="form-group col-md-2">
+                    <label htmlFor="sku">SKU</label>
+                    <input type="text" className="form-control" id="sku" name="sku" required value={product.sku} onChange={handleChange} />
+                </div>
+                <div className="form-group col-md-2">
+                    <label htmlFor="name">Name</label>
+                    <input type="text" className="form-control" id="name" name="name" required value={product.name} onChange={handleChange} />
+                </div>
+                <div className="form-group col-md-2">
+                    <label htmlFor="category_id">Category</label>
+                    <select className="form-control" id="category_id" name="category_id" required value={product.category_id} onChange={handleChange}>
                         <option value="">Select a category</option>
                         {categories.map(category => (
                             <option key={category.id} value={category.id}>{category.name}</option>
                         ))}
-                    </Form.Control>
-                </Form.Group>
-                <Form.Group controlId="price">
-                    <Form.Label>Price</Form.Label>
-                    <Form.Control
-                        type="number"
-                        name="price"
-                        value={product.price}
-                        onChange={handleChange}
-                        required
-                    />
-                </Form.Group>
-                <Form.Group controlId="quantity">
-                    <Form.Label>Quantity</Form.Label>
-                    <Form.Control
-                        type="number"
-                        name="quantity"
-                        value={product.quantity}
-                        onChange={handleChange}
-                        required
-                    />
-                </Form.Group>
-                <Button variant="primary" type="submit">Save</Button>
-            </Form>
-        </div>
+                    </select>
+                </div>
+                <div className="form-group col-md-2">
+                    <label htmlFor="price">Price</label>
+                    <input type="number" className="form-control" id="price" name="price" required value={product.price} onChange={handleChange} />
+                </div>
+                <div className="form-group col-md-2">
+                    <label htmlFor="quantity">Quantity</label>
+                    <input type="number" className="form-control" id="quantity" name="quantity" required value={product.quantity} onChange={handleChange} />
+                </div>
+                <div className="form-group col-md-2">
+                    <button type="submit" className="btn btn-primary">Add Product</button>
+                </div>
+            </div>
+        </form>
+    </div>
     );
 }
 

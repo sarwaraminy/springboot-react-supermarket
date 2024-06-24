@@ -30,6 +30,11 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
     
+	// Get user by email
+	public User getUserByEmail(String email){
+		return userRepository.findByEmail(email).orElse(null);
+	}
+	
     //
 	public List<User> getAllUsers(){ //get all records from Users table
 		Iterable<User> iterable = userRepository.findAll();

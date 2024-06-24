@@ -39,30 +39,23 @@ const CategoryForm = () => {
     }
 
     return (
-        <div>
-            <h1>{id ? 'Edit Category' : 'Add New Category'}</h1>
-            <Form onSubmit={handleSubmit}>
-                <Form.Group controlId="name">
-                    <Form.Label>Name</Form.Label>
-                    <Form.Control
-                        type="text"
-                        name="name"
-                        value={category.name}
-                        onChange={handleChange}
-                        required
-                    />
-                </Form.Group>
-                <Form.Group controlId="description">
-                    <Form.Label>Description</Form.Label>
-                    <Form.Control
-                        as="textarea"
-                        name="description"
-                        value={category.description}
-                        onChange={handleChange}
-                    />
-                </Form.Group>
-                <Button variant="primary" type="submit">Save</Button>
-            </Form>
+        <div className="container-fluid">
+            <h1>Add New Category</h1>
+            <form id="category-form" onSubmit={handleSubmit}>
+                <div className="form-row align-items-end">
+                    <div className="form-group col-md-3">
+                        <label htmlFor="name">Name</label>
+                        <input type="text" className="form-control" id="name" name="name" value={category.name} onChange={handleChange} required />
+                    </div>
+                    <div className="form-group col-md-6">
+                        <label htmlFor="description">Description</label>
+                        <textarea name="description" id="description" className="form-control" rows={3} value={category.description} onChange={handleChange} />
+                    </div>
+                    <div className="form-group col-md-3">
+                        <button type="submit" className="btn btn-primary">Add Category</button>
+                    </div>
+                </div>
+            </form>
         </div>
     );
 }

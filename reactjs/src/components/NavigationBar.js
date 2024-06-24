@@ -9,7 +9,7 @@ const NavigationBar = () => {
             <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#basic-navbar-nav" aria-controls="basic-navbar-nav" aria-expanded="false" aria-label="Toggle navigation">
                 <span className="navbar-toggler-icon"></span>
             </button>
-            <div className="collapse navbar-collapse" id="basic-navbar-nav">
+            <div className="collapse navbar-collapse col-md-10" id="basic-navbar-nav">
                 <ul className="navbar-nav mr-auto">
                     <li className="nav-item">
                         <Link className="nav-link" to="/products">Products</Link>
@@ -29,8 +29,10 @@ const NavigationBar = () => {
                     <li className="nav-item">
                         <Link className="nav-link" to="/translations">Translations</Link>
                     </li>
-                    <li><LogoutButton  /></li>
                 </ul>
+            </div>
+            <div className="col-md-1">
+                <LogoutButton  />
             </div>
         </nav>
     );
