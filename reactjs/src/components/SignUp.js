@@ -6,7 +6,6 @@ export const SignUpPage = () => {
     const [confirmPasswordValue, setConfirmPasswordValue] = useState('');
 
     const [formData, setFormData] = useState({
-        username: '',
         email: '',
         password: '',
         firstname: '',
@@ -51,7 +50,7 @@ export const SignUpPage = () => {
             console.log(formData);
             const response = await axios.post(`${apiServer}/auth/signup`, formData);
             setSuccessMessage(`<font color="green">User added Successfully: ${response.data.email}</font>`);
-            setFormData({ email: '', password: '', firstname: '', lastname: '', role: 'USER', langCode: 'en', username: '' });
+            setFormData({ email: '', password: '', firstname: '', lastname: '', role: 'USER', langCode: 'en' });
             setConfirmPasswordValue('');
             navigate("/login");
         } catch (error) {
@@ -71,13 +70,6 @@ export const SignUpPage = () => {
                         {successMessage && <div className="col-md-8" dangerouslySetInnerHTML={{ __html: successMessage }}></div>}
                         <div className="card-body">
                             <form id="registerUser" onSubmit={registerUser}>
-                                <div className="form-group">
-                                    <label htmlFor="username">Username</label>
-                                    <input type="text" className="form-control" id="username" placeholder="someone@someemail.com"
-                                        value={formData.username}
-                                        onChange={handleFormChange}
-                                    />
-                                </div>
                                 <div className="form-group">
                                     <label htmlFor="email">Email Address</label>
                                     <input type="email" className="form-control" id="email" placeholder="someone@someemail.com"
@@ -101,14 +93,14 @@ export const SignUpPage = () => {
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="role">Role: </label>
-                                    <select className="form-select" id="role" value={formData.role} onChange={handleRoleChange}>
+                                    <select className="form-control" id="role" value={formData.role} onChange={handleRoleChange}>
                                         <option value="USER">User</option>
                                         <option value="ADMIN">Administrator</option>
                                     </select>
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="langCode">User Language: </label>
-                                    <select className="form-select" id="langCode" value={formData.langCode} onChange={handleLanugageChange}>
+                                    <select className="form-control" id="langCode" value={formData.langCode} onChange={handleLanugageChange}>
                                         <option value="en">English</option>
                                         <option value="fa">دری</option>
                                         <option value="ps">پشتو</option>

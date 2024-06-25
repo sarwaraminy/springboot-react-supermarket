@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.shops.supermarket.entity.Category;
 import com.shops.supermarket.entity.Product;
 import com.shops.supermarket.entity.Translation;
 import com.shops.supermarket.repos.TranslationRepository;
@@ -19,6 +20,7 @@ public class TranslationService {
         this.translationRepository = translationRepository;
     }
 
+    // translate for Product table
     public List<Product> translateProducts(List<Product> products, String langCode) {
         if (products.isEmpty()) {
             return products;
@@ -52,6 +54,43 @@ public class TranslationService {
         });
 
         return products;
+    }
+
+    // translate for category table
+    
+    public List<Category> translateCategories(List<Category> categories, String langCode) {
+        if (categories.isEmpty()) {
+            return categories;
+        }
+
+        // Fetch translations for the category
+        List<Long> categoryIds = categories.stream().map(Category::getId).collect(Collectors.toList());
+        List<Translation> translations = translationRepository.findByLangCodeAndTableNameAndRowIdIn(
+                langCode, "categories", categoryIds
+        );
+
+        // Map translations to a structure for easy lookup
+        Map<Long, Map<String, String>> translationMap = translations.stream()
+                .collect(Collectors.groupingBy(
+                        Translation::getRowId,
+                        Collectors.toMap(Translation::getColumnName, Translation::getTranslation)
+                ));
+
+        // Apply translations to categories
+        categories.forEach(category -> {
+            Map<String, String> categoryTranslations = translationMap.get(category.getId());
+            if (categoryTranslations != null) {
+                if (categoryTranslations.containsKey("name")) {
+                    category.setName(categoryTranslations.get("name"));
+                }
+                if (categoryTranslations.containsKey("description")) {
+                    category.setDescription(categoryTranslations.get("description"));
+                }
+                // Add other fields as necessary
+            }
+        });
+
+        return categories;
     }
 
     // save translation from product

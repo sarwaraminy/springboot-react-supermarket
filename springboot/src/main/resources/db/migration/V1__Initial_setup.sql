@@ -1,7 +1,6 @@
 -- Users table: Stores user information.
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(100) NOT NULL,
     email VARCHAR(200) UNIQUE,
     role VARCHAR(50) NOT NULL,   -- e.g., admin, cashier, etc.
@@ -22,12 +21,13 @@ CREATE TABLE categories (
 -- Products table: Stores information about products.
 CREATE TABLE products (
     id SERIAL PRIMARY KEY,
-    sku VARCHAR(50) NOT NULL UNIQUE, -- Stock Keeping Unit
+   -- sku VARCHAR(50) NOT NULL UNIQUE, -- Stock Keeping Unit
     name VARCHAR(100) NOT NULL,
     description TEXT,
     category_id INTEGER REFERENCES categories(id),
     price DECIMAL(10, 2) NOT NULL,
     quantity INTEGER NOT NULL,
+    discount INTEGER DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

@@ -37,16 +37,12 @@ public class UserController {
     // register a new user
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignupRequest signupRequest) {
-        if (userService.existsByUsername(signupRequest.getUsername())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Username is already taken.");
-        }
 
         if (userService.existsByEmail(signupRequest.getEmail())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Email is already in use.");
         }
 
         User user = new User();
-        user.setUsername(signupRequest.getUsername());
         user.setEmail(signupRequest.getEmail());
         user.setPassword(signupRequest.getPassword()); // Make sure to hash the password properly
         user.setRole(signupRequest.getRole());

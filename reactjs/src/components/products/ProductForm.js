@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-
+import { useUserEmail } from '../../auth/useUserEmail';
 
 const ProductForm = ({ fetchProduct }) => {
     const { id } = useParams();
     const [product, setProduct] = useState({
-        sku: '',
         name: '',
         category_id: '',
         price: '',
-        quantity: ''
+        quantity: '',
+        discount: ''
     });
     const [categories, setCategories] = useState([]);
+    const loggedEmail = useUserEmail();
 
     useEffect(() => {
         if (id) {
@@ -19,7 +20,7 @@ const ProductForm = ({ fetchProduct }) => {
                 .then(response => response.json())
                 .then(data => setProduct(data));
         }
-        fetch('/api/categories')
+        fetch(`${process.env.REACT_APP_API_SERVER}/api/categories/${loggedEmail}`)
             .then(response => response.json())
             .then(data => setCategories(data));
     }, [id]);
@@ -32,7 +33,7 @@ const ProductForm = ({ fetchProduct }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         const method = id ? 'PUT' : 'POST';
-        const url = id ? `/api/products/${id}` : '/api/products';
+        const url = id ? `${process.env.REACT_APP_API_SERVER}/api/product/${id}` : `${process.env.REACT_APP_API_SERVER}/api/product/add`;
         fetch(url, {
             method: method,
             headers: {
@@ -41,6 +42,7 @@ const ProductForm = ({ fetchProduct }) => {
             body: JSON.stringify(product)
         }).then(() => {
             fetchProduct(); // refresh the product list
+            setProduct({name: '', category_id: '', price: '', quantity: '', discount:''});
         });
     }
 
@@ -49,10 +51,6 @@ const ProductForm = ({ fetchProduct }) => {
         <h1 id="form-title">Add New Product</h1>
         <form id="product-form" onSubmit={handleSubmit}>
             <div className="form-row align-items-end">
-                <div className="form-group col-md-2">
-                    <label htmlFor="sku">SKU</label>
-                    <input type="text" className="form-control" id="sku" name="sku" required value={product.sku} onChange={handleChange} />
-                </div>
                 <div className="form-group col-md-2">
                     <label htmlFor="name">Name</label>
                     <input type="text" className="form-control" id="name" name="name" required value={product.name} onChange={handleChange} />
@@ -70,9 +68,13 @@ const ProductForm = ({ fetchProduct }) => {
                     <label htmlFor="price">Price</label>
                     <input type="number" className="form-control" id="price" name="price" required value={product.price} onChange={handleChange} />
                 </div>
-                <div className="form-group col-md-2">
+                <div className="form-group col-md-1">
                     <label htmlFor="quantity">Quantity</label>
                     <input type="number" className="form-control" id="quantity" name="quantity" required value={product.quantity} onChange={handleChange} />
+                </div>
+                <div className="form-group col-md-1">
+                    <label htmlFor="discount">Discount</label>
+                    <input type="number" className="form-control" id="discount" name="discount" required value={product.discount} onChange={handleChange} />
                 </div>
                 <div className="form-group col-md-2">
                     <button type="submit" className="btn btn-primary">Add Product</button>

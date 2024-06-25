@@ -20,11 +20,6 @@ public class UserService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    // check the username is exists
-    public boolean existsByUsername(String username){
-        return userRepository.existsByUsername(username);
-    }
-
     // check if email exists
     public boolean existsByEmail(String email){
         return userRepository.existsByEmail(email);

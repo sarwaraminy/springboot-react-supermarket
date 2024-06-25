@@ -2,17 +2,12 @@ package com.shops.supermarket.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -23,8 +18,8 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "sku", nullable = false, unique = true)
-    private String sku;
+    //@Column(name = "sku", nullable = false, unique = true)
+    //private String sku;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -32,9 +27,9 @@ public class Product {
     @Column(name = "description")
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
+    //@ManyToOne
+    //@JoinColumn(name = "category_id")
+    //private Category category;
 
     @Column(name = "price", nullable = false)
     private BigDecimal price;
@@ -42,17 +37,20 @@ public class Product {
     @Column(name = "quantity", nullable = false)
     private int quantity;
 
+    @Column(name = "discount")
+    private int discount;
+    
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    private List<OrderItem> orderItems;
+    //@OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    //private List<OrderItem> orderItems;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    private List<ProductSupplier> productSuppliers;
+    //@OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    //private List<ProductSupplier> productSuppliers;
 
     // Getters and Setters
     // ...
@@ -65,13 +63,13 @@ public class Product {
         this.id = id;
     }
 
-    public String getSku() {
-        return this.sku;
-    }
+    //public String getSku() {
+    //    return this.sku;
+    //}
 
-    public void setSku(String sku) {
-        this.sku = sku;
-    }
+    //public void setSku(String sku) {
+    //    this.sku = sku;
+    //}
 
     public String getName() {
         return this.name;
@@ -111,6 +109,14 @@ public class Product {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public int getDiscount() {
+        return this.discount;
+    }
+
+    public void setDiscount(int discount) {
+        this.discount = discount;
     }
 
     public LocalDateTime getCreatedAt() {
