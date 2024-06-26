@@ -67,7 +67,7 @@ const ProductList = () => {
                                 {Array.isArray(products) && products.map(product => (
                                     <tr key={product.id}>
                                         <td>{product.name}</td>
-                                        <td>{product.category}</td>
+                                        <td>{product.categoryName ? product.categoryName : 'No Category'}</td>
                                         <td>{product.price}</td>
                                         <td>{product.quantity}</td>
                                         <td>{product.discount}</td>

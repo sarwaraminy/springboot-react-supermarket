@@ -6,7 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.shops.supermarket.entity.Category;
 import com.shops.supermarket.entity.Product;
+import com.shops.supermarket.repos.CategoryRepository;
 import com.shops.supermarket.repos.ProductRepository;
 
 @Service
@@ -14,6 +16,8 @@ public class ProductService {
     
     @Autowired
     private ProductRepository productRepository;
+    @Autowired 
+    private CategoryRepository categoryRepository;
 
     //
 	public List<Product> getAllProducts(){ //get all records from Users table
@@ -29,7 +33,13 @@ public class ProductService {
     }
 
     // Create Product
-    public Product saveProduct(Product product){
+    public Product saveProduct(Product product) {
+        if (product.getCategory() != null && product.getCategory().getId() != null) {
+            Category category = categoryRepository.findById(product.getCategory().getId()).orElse(null);
+            if (category != null) {
+                product.setCategory(category);
+            }
+        }
         return productRepository.save(product);
     }
 }

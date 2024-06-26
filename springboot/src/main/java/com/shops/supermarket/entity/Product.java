@@ -3,11 +3,15 @@ package com.shops.supermarket.entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -18,18 +22,16 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //@Column(name = "sku", nullable = false, unique = true)
-    //private String sku;
-
     @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "description")
     private String description;
 
-    //@ManyToOne
-    //@JoinColumn(name = "category_id")
-    //private Category category;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    @JsonBackReference 
+    private Category category;
 
     @Column(name = "price", nullable = false)
     private BigDecimal price;
@@ -39,21 +41,14 @@ public class Product {
 
     @Column(name = "discount")
     private int discount;
-    
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now();
 
-    //@OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    //private List<OrderItem> orderItems;
-
-    //@OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    //private List<ProductSupplier> productSuppliers;
-
     // Getters and Setters
-    // ...
 
     public Long getId() {
         return this.id;
@@ -62,14 +57,6 @@ public class Product {
     public void setId(Long id) {
         this.id = id;
     }
-
-    //public String getSku() {
-    //    return this.sku;
-    //}
-
-    //public void setSku(String sku) {
-    //    this.sku = sku;
-    //}
 
     public String getName() {
         return this.name;
@@ -87,13 +74,13 @@ public class Product {
         this.description = description;
     }
 
-    //public Category getCategory() {
-    //    return this.category;
-    //}
-//
-    //public void setCategory(Category category) {
-    //    this.category = category;
-    //}
+    public Category getCategory() {
+        return this.category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 
     public BigDecimal getPrice() {
         return this.price;
@@ -134,21 +121,24 @@ public class Product {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
-//
-    //public List<OrderItem> getOrderItems() {
-    //    return this.orderItems;
-    //}
-//
-    //public void setOrderItems(List<OrderItem> orderItems) {
-    //    this.orderItems = orderItems;
-    //}
-//
-    //public List<ProductSupplier> getProductSuppliers() {
-    //    return this.productSuppliers;
-    //}
-//
-    //public void setProductSuppliers(List<ProductSupplier> productSuppliers) {
-    //    this.productSuppliers = productSuppliers;
-    //}
-//
+
+    // Additional method to get category name
+    public String getCategoryName() {
+        return category != null ? category.getName() : null;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", category=" + (category != null ? category.getId() : null) +
+                ", price=" + price +
+                ", quantity=" + quantity +
+                ", discount=" + discount +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
 }

@@ -1,6 +1,8 @@
 package com.shops.supermarket.controller;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.shops.supermarket.entity.Category;
 import com.shops.supermarket.entity.Product;
 import com.shops.supermarket.entity.User;
 import com.shops.supermarket.service.ProductService;
@@ -39,8 +42,29 @@ public class ProductController {
 
         // Translate products based on user's language preference
         String language = user.getLangCode();
-        List<Product> translatedProducts = translationService.translateProducts(products, language);
 
+        // Fetch and translate categories
+        List<Category> categories = products.stream()
+            .map(Product::getCategory)
+            .distinct()
+            .collect(Collectors.toList());
+
+        List<Category> translatedCategories = translationService.translateCategories(categories, language);
+        
+        // Create a map for translated categories for easy lookup
+        Map<Long, String> translatedCategoryMap = translatedCategories.stream()
+          .collect(Collectors.toMap(Category::getId, Category::getName));
+        
+        // Apply translated category names to products
+        List<Product> translatedProducts = products.stream().map(product -> {
+            String translatedCategoryName = translatedCategoryMap.get(product.getCategory().getId());
+            product.getCategory().setName(translatedCategoryName); // Apply translated category name
+            return product;
+        }).collect(Collectors.toList());
+
+        // Translate other product fields if necessary
+        translatedProducts = translationService.translateProducts(translatedProducts, language);
+        //System.out.println("Pulled product: " + translatedProducts);
         return ResponseEntity.ok(translatedProducts);
     }
 
@@ -57,7 +81,9 @@ public class ProductController {
 
     // Create product
     @PostMapping("/product/add")
-    public ResponseEntity<Product> createProductAndAddToTranslation(@RequestBody Product product){
+    public ResponseEntity<Product> createProduct(@RequestBody Product product){
+        // Print the received product to the console
+        //System.out.println("Received product: " + product);
         Product createProduct = productService.saveProduct(product);
         return ResponseEntity.status(HttpStatus.CREATED).body(createProduct);
     }
