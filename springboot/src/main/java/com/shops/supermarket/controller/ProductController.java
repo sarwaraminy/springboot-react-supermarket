@@ -9,9 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -21,6 +23,8 @@ import com.shops.supermarket.entity.User;
 import com.shops.supermarket.service.ProductService;
 import com.shops.supermarket.service.TranslationService;
 import com.shops.supermarket.service.UserService;
+
+
 
 
 @Controller
@@ -86,6 +90,37 @@ public class ProductController {
         //System.out.println("Received product: " + product);
         Product createProduct = productService.saveProduct(product);
         return ResponseEntity.status(HttpStatus.CREATED).body(createProduct);
+    }
+
+    // Update product based on product id
+    @PutMapping("product/{id}")
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product productDetail) {
+        Product product = productService.getProductById(id);
+        if(product != null){
+            product.setId(productDetail.getId());
+            product.setName(productDetail.getName());
+            product.setPrice(productDetail.getPrice());
+            product.setQuantity(productDetail.getQuantity());
+            product.setDiscount(productDetail.getDiscount());
+            System.out.println("productDetail: " + productDetail);
+            // update product
+            Product updatteProdcut = productService.saveProduct(product);
+            return ResponseEntity.ok(updatteProdcut);
+        } else {
+            return  ResponseEntity.notFound().build();
+        }
+    }
+
+    // Delete a product
+    @DeleteMapping("product/{id}")
+    public ResponseEntity<Product> deleteOneProduct(@PathVariable long id) {
+        Product product = productService.getProductById(id);
+        if(product != null ){
+            productService.deleteAProduct(id);
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
     
 }
