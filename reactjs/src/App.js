@@ -7,6 +7,7 @@ import { SignUpPage } from "./components/SignUp";
 
 import Dashboard from './components/Dashboard';
 import ProductList from './components/products/ProductList';
+import PaymentComponent from './components/products/PaymentComponent';
 import ProductForm from './components/products/ProductForm';
 import CategoryList from './components/categories/CategoryList';
 import CategoryForm from './components/categories/CategoryForm';
@@ -39,7 +40,7 @@ const App = () => {
                         >
                             <Route index element={<Dashboard />} />
                             <Route path="products" element={<ProductList />} />
-                            <Route path="products/new" element={<ProductForm />} />
+                            <Route path="products/payment" element={<PaymentComponent />} />
                             <Route path="products/edit/:id" element={<ProductForm />} />
                             <Route path="categories" element={<CategoryList />} />
                             <Route path="categories/new" element={<CategoryForm />} />

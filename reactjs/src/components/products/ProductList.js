@@ -19,7 +19,7 @@ const ProductList = () => {
     const [formData, setFormData] = useState({
         id: '',
         name: '',
-        category_id: '',
+        categoryId: '',
         price: '',
         quantity: '',
         discount: ''
@@ -56,7 +56,7 @@ const ProductList = () => {
         setFormData({
             id: product.id,
             name: product.name,
-            category_id: product.category_id,
+            categoryId: product.categoryId,
             price: product.price,
             quantity: product.quantity,
             discount: product.discount
@@ -70,17 +70,18 @@ const ProductList = () => {
 
     const handleCategoryChange = (e) => {
         const { value } = e.target;
-        setFormData({ ...formData, category_id: value });
+        setFormData({ ...formData, categoryId: value });
     };
 
     const handleCancelClick = () => {
         setEditProductId(null);
-        setFormData({ id: '', name: '', category_id: '', price: '', quantity: '', discount: '' });
+        setFormData({ id: '', name: '', categoryId: '', price: '', quantity: '', discount: '' });
         setMessages('');
     };
 
     const handleSaveClick = async () => {
-        try {console.log("handleSaveClick formData: " + formData);
+        try {
+            console.log("handleSaveClick formData:", JSON.stringify(formData, null, 2));
             await axios.put(`${process.env.REACT_APP_API_SERVER}/api/product/${formData.id}`, formData);
             fetchProduct();
             setEditProductId(null);
@@ -173,9 +174,9 @@ const ProductList = () => {
                                             {editProductId === product.id ? (
                                                 <>
                                                    <td>{product.id}</td>
-                                                   <td>{product.name}</td>
+                                                   <td><input type="text" className="form-control" name="name" value={formData.name} onChange={handleInputChange} /></td>
                                                    <td>
-                                                      <select className="form-control" name="category_id" defaultValue={formData.category_id} onChange={handleCategoryChange}>
+                                                      <select className="form-control" name="categoryId" defaultValue={formData.categoryId} onChange={handleCategoryChange}>
                                                         {categories.map(category => (
                                                             <option key={category.id} value={category.id}>{category.name}</option>
                                                         ))}

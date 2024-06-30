@@ -1,5 +1,7 @@
 package com.shops.supermarket.controller;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.shops.supermarket.entity.Category;
 import com.shops.supermarket.entity.Product;
 import com.shops.supermarket.entity.User;
+import com.shops.supermarket.service.CategoryService;
 import com.shops.supermarket.service.ProductService;
 import com.shops.supermarket.service.TranslationService;
 import com.shops.supermarket.service.UserService;
@@ -37,6 +40,8 @@ public class ProductController {
     @Autowired private TranslationService translationService;
 
     @Autowired private UserService userService;
+
+    @Autowired private CategoryService categoryService;
 
     // get all user
     @GetMapping("/products/{email}")
@@ -92,22 +97,33 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createProduct);
     }
 
-    // Update product based on product id
+    // Update product based on product id 
+    // Manual Mapping: You can extract categoryId from the request body and then set the Category in the Product entity
     @PutMapping("product/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product productDetail) {
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Map<String, Object> productDetail) {
         Product product = productService.getProductById(id);
-        if(product != null){
-            product.setId(productDetail.getId());
-            product.setName(productDetail.getName());
-            product.setPrice(productDetail.getPrice());
-            product.setQuantity(productDetail.getQuantity());
-            product.setDiscount(productDetail.getDiscount());
-            System.out.println("productDetail: " + productDetail);
-            // update product
-            Product updatteProdcut = productService.saveProduct(product);
-            return ResponseEntity.ok(updatteProdcut);
+        if (product != null) {
+            product.setName((String) productDetail.get("name"));
+            product.setDescription((String) productDetail.get("description"));
+            product.setPrice(new BigDecimal(productDetail.get("price").toString()));
+            product.setQuantity((Integer) productDetail.get("quantity"));
+            product.setDiscount((Integer) productDetail.get("discount"));
+
+            // Update category
+            if (productDetail.containsKey("categoryId")) {
+                Long categoryId = Long.valueOf(productDetail.get("categoryId").toString());
+                Category category = categoryService.getCategoryById(categoryId);
+                product.setCategory(category);
+            }
+
+            // Update timestamps
+            product.setUpdatedAt(LocalDateTime.now());
+
+            // Update product
+            Product updatedProduct = productService.saveProduct(product);
+            return ResponseEntity.ok(updatedProduct);
         } else {
-            return  ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();
         }
     }
 
