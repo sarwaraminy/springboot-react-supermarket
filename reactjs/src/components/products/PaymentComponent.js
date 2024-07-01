@@ -1,8 +1,15 @@
 import React, { useState } from "react";
 import PaymentCash from "./PaymentCash";
+import useFormatter from "../hooks/useFormatter";
 
-const PaymentComponent = ({ payVal, onEditClick, formatCurrenc }) => {
+const PaymentComponent = ({ payVal, onEditClick, buyList, onResetBuyList, grandTotal, totalItem, totalDiscount }) => {
     const [showPaymentCollect, setShowPaymentCollect] = useState(false);
+
+    const { formatCurrency } = useFormatter();
+
+    const handleGoBackBuyList = () => {
+        setShowPaymentCollect(false);
+    };
 
     const handleEditClick = () => {
         onEditClick(); // Invoke the callback to go back to BuyList
@@ -39,26 +46,26 @@ const PaymentComponent = ({ payVal, onEditClick, formatCurrenc }) => {
                                     className="btn btn-pill btn-outline-primary form-control text-right"
                                     disabled
                                 >
-                                    {formatCurrenc(formattedPayVal)} {/* Ensure formatCurrenc is defined */}
+                                    {formatCurrency(formattedPayVal)} {/* Ensure formatCurrenc is defined */}
                                 </button>
                             </div>
                         </div>
                     </div>
-                    <div className="row mt-3 ml-1">
+                    <div className="row mt-3 mb-2">
                         <div className="col-sm-12 text-success">
                             <a href="#" onClick={handleEditClick}>Edit to make partial payment.</a>
                         </div>
                     </div>
-                    <button type="button" className="btn btn-lg btn-success btn-block p-3" onClick={showPayModl}>
+                    <button type="button" className="btn btn-sm btn-success btn-block" onClick={showPayModl}>
                         <label className="h4">Cash</label>
                     </button>
-                    <button type="button" className="btn btn-lg btn-secondary btn-block p-3" onClick={showLayby}>
+                    <button type="button" className="btn btn-sm btn-secondary btn-block" onClick={showLayby}>
                         <label className="h4">Layby</label>
                     </button>
-                    <button type="button" className="btn btn-lg btn-warning btn-block p-3" onClick={showStCrd}>
+                    <button type="button" className="btn btn-sm btn-warning btn-block" onClick={showStCrd}>
                         <label className="h4">Store Credit</label>
                     </button>
-                    <button type="button" className="btn btn-lg btn-info btn-block p-3" onClick={showAnAccount}>
+                    <button type="button" className="btn btn-sm btn-info btn-block" onClick={showAnAccount}>
                         <label className="h4">On Account</label>
                     </button>
                 </>
@@ -66,7 +73,12 @@ const PaymentComponent = ({ payVal, onEditClick, formatCurrenc }) => {
             {showPaymentCollect && (
                 <PaymentCash
                     payVal={parseFloat(payVal)} // Ensure payVal is parsed as float if necessary
-                    formatCurrenc={formatCurrenc} // Pass formatCurrenc function to PaymentCash
+                    onEditClick={handleGoBackBuyList}
+                    onResetBuyList={onResetBuyList} // Pass the reset function to PaymentCash
+                    buyList={buyList}
+                    grandTotal={grandTotal}
+                    totalItem={totalItem}
+                    totalDiscount={totalDiscount}
                 />
             )}
         </>

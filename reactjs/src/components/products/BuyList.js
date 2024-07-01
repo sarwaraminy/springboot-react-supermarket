@@ -2,19 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import PaymentComponent from './PaymentComponent'; // Adjust the import path as necessary
-
-const formatCurrency = (value) => {
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-    }).format(value);
-};
-
-const formatInteger = (value) => {
-    return new Intl.NumberFormat('en-US', {
-        maximumFractionDigits: 0,
-    }).format(value);
-};
+import useFormatter from '../hooks/useFormatter';
 
 const BuyList = ({ buyList, setBuyList }) => {
     const [openItems, setOpenItems] = useState([]);
@@ -22,6 +10,8 @@ const BuyList = ({ buyList, setBuyList }) => {
     const [totalDiscount, setTotalDiscount] = useState(0);
     const [totalItem, setTotalItem] = useState(0);
     const [showPayment, setShowPayment] = useState(false);
+
+    const { formatCurrency, formatInteger } = useFormatter();
 
     useEffect(() => {
         const calculateTotals = () => {
@@ -37,8 +27,8 @@ const BuyList = ({ buyList, setBuyList }) => {
                 totItems += item.quantity;
             });
 
-            setGrandTotal(total.toFixed(2)); // Ensure grandTotal is formatted to 2 decimal places
-            setTotalDiscount(discount.toFixed(2));
+            setGrandTotal(parseFloat(total.toFixed(2))); // Ensure grandTotal is a number
+            setTotalDiscount(parseFloat(discount.toFixed(2))); // Ensure totalDiscount is a number
             setTotalItem(totItems);
         };
 
@@ -72,111 +62,124 @@ const BuyList = ({ buyList, setBuyList }) => {
         setShowPayment(false); // Set showPayment to false to display BuyList again
     };
 
+    const handleResetBuyList = () => {
+        setBuyList([]); // Reset buyList to an empty array
+        setShowPayment(false); // Ensure we go back to BuyList view
+    };
+
     return (
         <>
             {!showPayment && (
                 <div className="table-container">
-                    {buyList.map((item, index) => (
-                        <div key={index} className="card mb-3 border">
-                            <div className="card-header d-flex justify-content-between align-items-center" onClick={() => toggleOpenItem(index)} style={{ cursor: 'pointer' }}>
-                                <div className="row w-100">
-                                    <div className="col-sm-1">
-                                        <FontAwesomeIcon 
-                                            icon={openItems.includes(index) ? faChevronDown : faChevronRight} 
-                                            className="mr-2"
-                                        />
-                                    </div>
-                                    <div className="col-sm-2"><label>{formatInteger(item.quantity)}</label></div>
-                                    <div className="col-sm-6"><label>{item.name}</label></div>
-                                    <div className="col-sm-2 text-right text-danger">
-                                        <label>
-                                            {formatCurrency(item.quantity * item.price - (item.discount / 100) * (item.quantity * item.price))}
-                                        </label>
-                                    </div>
-                                    <div className="col-sm-1 text-right">
-                                        <a href="#">
-                                            <FontAwesomeIcon icon={faTrashAlt} className="text-success" onClick={() => removeItem(index)} />
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            {openItems.includes(index) && (
-                                <div className="card-body">
-                                    <div className="row">
-                                        <div className="col">
-                                            <label>Quantity</label>
-                                            <input
-                                                type="number"
-                                                className="form-control"
-                                                value={item.quantity}
-                                                onChange={(e) => handleInputChange(index, 'quantity', e.target.value)}
-                                            />
-                                        </div>
-                                        <div className="col">
-                                            <label>Price</label>
-                                            <input
-                                                type="number"
-                                                className="form-control"
-                                                value={item.price}
-                                                onChange={(e) => handleInputChange(index, 'price', e.target.value)}
-                                            />
-                                        </div>
-                                        <div className="col">
-                                            <label>Discount (%)</label>
-                                            <input
-                                                type="number"
-                                                className="form-control"
-                                                value={item.discount}
-                                                onChange={(e) => handleInputChange(index, 'discount', e.target.value)}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="row mt-3">
-                                        <div className="col-12">
-                                            <label>Note</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={item.note || ''}
-                                                onChange={(e) => handleInputChange(index, 'note', e.target.value)}
-                                                placeholder="Type to add note..."
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="row mt-3">
-                                        <div className="col-12 text-right text-success">
-                                            <button className="btn btn-link" onClick={() => console.log('Show Inventory & Details')}>
-                                                Show Inventory & Details
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
+                    {buyList.length === 0 ? (
+                        <div className="alert alert-info">
+                            Your buy list is empty. Start adding items to the buy list.
                         </div>
-                    ))}
+                    ) : (
+                        buyList.map((item, index) => (
+                            <div key={index} className="card mb-3 border">
+                                <div className="card-header d-flex justify-content-between align-items-center" onClick={() => toggleOpenItem(index)} style={{ cursor: 'pointer' }}>
+                                    <div className="row w-100">
+                                        <div className="col-sm-1">
+                                            <FontAwesomeIcon 
+                                                icon={openItems.includes(index) ? faChevronDown : faChevronRight} 
+                                                className="mr-2"
+                                            />
+                                        </div>
+                                        <div className="col-sm-2"><label>{formatInteger(item.quantity)}</label></div>
+                                        <div className="col-sm-6"><label>{item.name}</label></div>
+                                        <div className="col-sm-2 text-right text-danger">
+                                            <label>
+                                                {formatCurrency(item.quantity * item.price - (item.discount / 100) * (item.quantity * item.price))}
+                                            </label>
+                                        </div>
+                                        <div className="col-sm-1 text-right">
+                                            <a href="#">
+                                                <FontAwesomeIcon icon={faTrashAlt} className="text-success" onClick={() => removeItem(index)} />
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                {openItems.includes(index) && (
+                                    <div className="card-body">
+                                        <div className="row">
+                                            <div className="col">
+                                                <label>Quantity</label>
+                                                <input
+                                                    type="number"
+                                                    className="form-control"
+                                                    value={item.quantity}
+                                                    onChange={(e) => handleInputChange(index, 'quantity', e.target.value)}
+                                                />
+                                            </div>
+                                            <div className="col">
+                                                <label>Price</label>
+                                                <input
+                                                    type="number"
+                                                    className="form-control"
+                                                    value={item.price}
+                                                    onChange={(e) => handleInputChange(index, 'price', e.target.value)}
+                                                />
+                                            </div>
+                                            <div className="col">
+                                                <label>Discount (%)</label>
+                                                <input
+                                                    type="number"
+                                                    className="form-control"
+                                                    value={item.discount}
+                                                    onChange={(e) => handleInputChange(index, 'discount', e.target.value)}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="row mt-3">
+                                            <div className="col-12">
+                                                <label>Note</label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    value={item.note || ''}
+                                                    onChange={(e) => handleInputChange(index, 'note', e.target.value)}
+                                                    placeholder="Type to add note..."
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="row mt-3">
+                                            <div className="col-12 text-right text-success">
+                                                <button className="btn btn-link" onClick={() => console.log('Show Inventory & Details')}>
+                                                    Show Inventory & Details
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        ))
+                    )}
                 </div>
             )}
-            {!showPayment && totalDiscount != 0 && (
+            {!showPayment && totalDiscount !== 0 && (
                 <div className="row m-1">
                     <div className="col-9 fw-bold">Total Saving</div>
                     <div className="col-3 text-secondary">{formatCurrency(totalDiscount)}</div>
                 </div>
             )}
-            {!showPayment && grandTotal != 0 && (
+            {!showPayment && grandTotal !== 0 && (
                 <div className="row bg-success m-1 p-2 align-items-center rounded fw-bold text-light" onClick={handlePaymentClick} style={{ cursor: 'pointer' }}>
                     <div className="col-6 text-left">Pay for {formatInteger(totalItem)} Item</div>
                     <div className="col-sm-5 pr-0 text-right">{formatCurrency(grandTotal)}</div>
                 </div>
             )}
 
-            {/* Conditionally render PaymentComponent */}
             {showPayment && (
                 <PaymentComponent
                     payVal={parseFloat(grandTotal)}
                     buyList={buyList}
                     setBuyList={setBuyList}
                     onEditClick={handleEditClick} // Pass callback to handle edit click
-                    formatCurrenc={formatCurrency}
+                    onResetBuyList={handleResetBuyList} // Pass callback to handle resetting buy list
+                    grandTotal={grandTotal}
+                    totalItem={totalItem}
+                    totalDiscount={totalDiscount}
                 />
             )}
         </>
