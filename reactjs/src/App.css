@@ -25,6 +25,20 @@ nav {
   justify-content: center;
 }
 
+.subtotal-row td {
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: 1px solid #dee2e6 !important; /* Or any color you prefer */
+}
+
+.table-striped:nth-of-type(even) {
+  background-color: #f9f9f9;
+}
+
+
+/* for printing product sale*/
+
 /* Remove bullets from the ul */
 ul {
   list-style: none;

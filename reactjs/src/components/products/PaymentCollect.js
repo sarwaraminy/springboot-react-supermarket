@@ -26,6 +26,11 @@ function PaymentCollect({ collect, payVal, isCash, isSQuot, onResetBuyList, buyL
     setShowPaymentC(true);
   };
 
+  const handleBack = () => {
+    setShowProductInfo(false);
+    setShowPaymentC(false);
+  };
+
   return (
     <>
       {!showPaymentC && (
@@ -91,6 +96,7 @@ function PaymentCollect({ collect, payVal, isCash, isSQuot, onResetBuyList, buyL
           collect={collect}
           payVal={payVal}
           showNote={showNote}
+          onBack={handleBack}
         />
       )}
     </>

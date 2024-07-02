@@ -106,8 +106,15 @@ public class ProductController {
             product.setName((String) productDetail.get("name"));
             product.setDescription((String) productDetail.get("description"));
             product.setPrice(new BigDecimal(productDetail.get("price").toString()));
-            product.setQuantity((Integer) productDetail.get("quantity"));
-            product.setDiscount((Integer) productDetail.get("discount"));
+
+            // Safely parse integer values
+            if (productDetail.containsKey("quantity")){
+                product.setQuantity(Integer.parseInt(productDetail.get("quantity").toString()));
+            }
+            
+            if (productDetail.containsKey("discount")){
+                product.setDiscount(Integer.parseInt(productDetail.get("discount").toString()));
+            }
 
             // Update category
             if (productDetail.containsKey("categoryId")) {

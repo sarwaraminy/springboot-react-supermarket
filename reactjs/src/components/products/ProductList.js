@@ -212,7 +212,9 @@ const ProductList = () => {
                                                     </td>
                                                     <td
                                                        className="editProductBtn"
-                                                       onClick={() => handleEditClick(product)}>
+                                                       onClick={() => handleEditClick(product)}
+                                                       title={product.descripton}
+                                                       >
                                                         {product.discount}
                                                         
                                                     </td>

@@ -81,3 +81,34 @@ CREATE TABLE translations (
     translation TEXT NOT NULL,
     PRIMARY KEY (lang_code, table_name, column_name, row_id)
 );
+
+-- Track the customers if needed
+CREATE TABLE customers (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(200) UNIQUE,
+    phone VARCHAR(20),
+    address TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Save sales information
+CREATE TABLE sales (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id), --The ID of the user (e.g., cashier) who processed the sale.
+    customer_id INTEGER REFERENCES customers(id) NULL,  -- if customer tracking is enabled
+    total_amount DECIMAL(10, 2) NOT NULL, -- The total amount for the sale.
+    payment_method VARCHAR(50) NOT NULL,  -- e.g., cash, credit card
+    status VARCHAR(50) NOT NULL,  -- e.g., completed, pending, cancelled
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- track the item that is soled
+CREATE TABLE sale_items (
+    id SERIAL PRIMARY KEY,
+    sale_id INTEGER REFERENCES sales(id), -- The ID of the sale this item belongs to.
+    product_id INTEGER REFERENCES products(id), -- The ID of the product being sold.
+    quantity INTEGER NOT NULL, -- The quantity of the product sold.
+    price DECIMAL(10, 2) NOT NULL, -- The price of the product at the time of sale.
+    discount DECIMAL(10, 2) DEFAULT 0.00 -- Any discount applied to the product.
+);
