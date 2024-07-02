@@ -81,17 +81,17 @@ const ProductInformation = ({ items, cart, dcountSign, totalDiscount, grandTotal
                     <thead className="sticky-header">
                         <tr>
                             <th className="border-0 text-underline">Items</th>
-                            <th className="border-0 text-underline">Name</th>
                             <th className="border-0 text-underline">Price</th>
+                            <th className="border-0 text-underline">Qty</th>
                             <th className="border-0 text-right text-underline">Total Price</th>
                         </tr>
                     </thead>
                     <tbody>
                         {items.map((item, index) => (
                             <tr key={index}>
-                                <td>{item.quantity}</td>
                                 <td>{item.name}</td>
                                 <td>{formatCurrency(item.price)}</td>
+                                <td>{item.quantity}</td>
                                 <td className="text-right">{formatCurrency(calculatePrice(item))}</td>
                             </tr>
                         ))}
