@@ -1,12 +1,30 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPrint, faReply } from '@fortawesome/free-solid-svg-icons';
 import useFormatter from '../hooks/useFormatter';
+import { useUserEmail } from '../../auth/useUserEmail';
+import axios from 'axios';
 
-const ProductInformation = ({ items, dcountSign, totalDiscount, grandTotal, getTotalPrk=0, getTax, totalItem, q_note, collect, payVal, showNote, onBack }) => {
+const ProductInformation = ({ items, dcountSign, onResetBuyList, totalDiscount, grandTotal, getTotalPrk=0, getTax, totalItem, q_note, collect, payVal, showNote, onBack }) => {
     const calculatePrice = (item) => (item.quantity * item.price) ;
     const { formatCurrency } = useFormatter();
     const printRef = useRef();
+
+    const loggedEmail = useUserEmail();
+    
+    
+    const [saleData, setSaleData] = useState({
+        user: {email: loggedEmail},
+        totalAmount: grandTotal,
+        paymentMethod: 'Cash',
+        status: 'completed',
+        saleItems: items.map(item => ({
+            productId: item.id,
+            quantity: item.quantity,
+            price: item.price,
+            discount: item.discount || 0
+        }))
+    });
 
     const handlePrint = () => {
         const printContent = printRef.current.innerHTML;
@@ -96,8 +114,14 @@ const ProductInformation = ({ items, dcountSign, totalDiscount, grandTotal, getT
         document.body.removeChild(iframe);
     };
 
-    const handleSaveSale = () => {
-        console.log("Sale information is saved!");
+    const handleSaveSale = async () => {
+        try { 
+            const response = await axios.post(`${process.env.REACT_APP_API_SERVER}/api/sale/save`, saleData);
+            console.log('Sale saved:', response.data);
+            onResetBuyList(); // Call the reset function
+        } catch (error) {
+            console.error('Error saving sale:', error);
+        }
     };
 
     const sortedItems = [...items].sort((a, b) => a.categoryName.localeCompare(b.categoryName));

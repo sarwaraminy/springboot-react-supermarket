@@ -5,11 +5,28 @@ import { faUser } from '@fortawesome/free-solid-svg-icons';
 
 import useFormatter from '../hooks/useFormatter';
 import ProductInformation from './ProductInformation';
+import { useUserEmail } from '../../auth/useUserEmail';
+import axios from 'axios';
 
 function PaymentCollect({ collect, payVal, isCash, isSQuot, onResetBuyList, buyList, cart, dcountSign, totalDiscount, grandTotal, getTotalPrk, getTax, totalItem, getTotalQty, q_note, date, payVl, showNote }) {
   const [cstmr, setCstmr] = useState('');
   const [showPaymentC, setShowPaymentC] = useState(false);
   const [showProductInfo, setShowProductInfo] = useState(false);
+
+  const loggedEmail = useUserEmail();
+    
+  const [saleData, setSaleData] = useState({
+      user: {email: loggedEmail},
+      totalAmount: grandTotal,
+      paymentMethod: 'Cash',
+      status: 'completed',
+      saleItems: buyList.map(item => ({
+          productId: item.id,
+          quantity: item.quantity,
+          price: item.price,
+          discount: item.discount || 0
+      }))
+  });
 
   const navigate = useNavigate();
   const { formatCurrency } = useFormatter();
@@ -20,10 +37,16 @@ function PaymentCollect({ collect, payVal, isCash, isSQuot, onResetBuyList, buyL
     setShowPaymentC(true);
   };
 
-  const competPay = () => {
-    onResetBuyList(); // Call the reset function
-    navigate('/products'); // Navigate to products page
-    setShowPaymentC(true);
+  const competPay = async () => {
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_API_SERVER}/api/sale/save`, saleData);
+      console.log('Sale saved:', response.data);
+      onResetBuyList(); // Call the reset function
+      navigate('/products'); // Navigate to products page
+      setShowPaymentC(true);
+    } catch (error) {
+      console.error('Error saving sale:', error);
+    }
   };
 
   const handleBack = () => {
@@ -97,6 +120,7 @@ function PaymentCollect({ collect, payVal, isCash, isSQuot, onResetBuyList, buyL
           payVal={payVal}
           showNote={showNote}
           onBack={handleBack}
+          onResetBuyList={onResetBuyList}
         />
       )}
     </>
