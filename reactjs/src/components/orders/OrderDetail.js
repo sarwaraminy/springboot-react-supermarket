@@ -3,13 +3,11 @@ import { useParams } from 'react-router-dom';
 import { Table, Button } from 'react-bootstrap';
 import axios from 'axios';
 
-import { useUserEmail } from '../../auth/useUserEmail'
-
 const OrderDetail = () => {
     const { id } = useParams();
     const [order, setOrder] = useState({});
     const [orderItems, setOrderItems] = useState([]);
-    const loggedEmail = useUserEmail(); // send the logged in user eamil to check user language
+    const token = localStorage.getItem('token');
 
     useEffect(() => {
         fetchOrderDetail();
@@ -17,7 +15,11 @@ const OrderDetail = () => {
 
     const fetchOrderDetail = async () => {
         try{
-            const response = await axios.get(`${process.env.REACT_APP_API_SERVER}/api/orders/${id}/${loggedEmail}`);
+            const response = await axios.get(`${process.env.REACT_APP_API_SERVER}/api/orders/${id}`, {}, {
+                headers: {
+                    'Authorization': `${token}`
+                }
+            });
             setOrder(response.data);
             setOrderItems(response.data.orderItems);
         } catch (error){

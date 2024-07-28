@@ -5,7 +5,6 @@ import { faUser } from '@fortawesome/free-solid-svg-icons';
 
 import useFormatter from '../hooks/useFormatter';
 import ProductInformation from './ProductInformation';
-import { useUserEmail } from '../../auth/useUserEmail';
 import axios from 'axios';
 
 function PaymentCollect({ collect, payVal, isCash, isSQuot, onResetBuyList, buyList, cart, dcountSign, totalDiscount, grandTotal, getTotalPrk, getTax, totalItem, getTotalQty, q_note, date, payVl, showNote }) {
@@ -13,10 +12,9 @@ function PaymentCollect({ collect, payVal, isCash, isSQuot, onResetBuyList, buyL
   const [showPaymentC, setShowPaymentC] = useState(false);
   const [showProductInfo, setShowProductInfo] = useState(false);
 
-  const loggedEmail = useUserEmail();
+  const token = localStorage.getItem('token');
     
   const [saleData, setSaleData] = useState({
-      user: {email: loggedEmail},
       totalAmount: grandTotal,
       paymentMethod: 'Cash',
       status: 'completed',
@@ -39,7 +37,11 @@ function PaymentCollect({ collect, payVal, isCash, isSQuot, onResetBuyList, buyL
 
   const competPay = async () => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_SERVER}/api/sale/save`, saleData);
+      const response = await axios.post(`${process.env.REACT_APP_API_SERVER}/api/sale/save`, saleData, {
+        headers: {
+          'Authorization': `${token}`
+        }
+      });
       console.log('Sale saved:', response.data);
       onResetBuyList(); // Call the reset function
       navigate('/products'); // Navigate to products page

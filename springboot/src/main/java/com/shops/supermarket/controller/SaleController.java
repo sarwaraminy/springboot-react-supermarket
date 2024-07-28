@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.shops.supermarket.dto.SaleDTO;
@@ -18,6 +19,7 @@ import com.shops.supermarket.entity.Sale;
 import com.shops.supermarket.entity.SaleItem;
 import com.shops.supermarket.entity.User;
 import com.shops.supermarket.repos.ProductRepository;
+import com.shops.supermarket.service.JwtService;
 import com.shops.supermarket.service.SaleService;
 import com.shops.supermarket.service.UserService;
 
@@ -28,15 +30,18 @@ import com.shops.supermarket.service.UserService;
 @RequestMapping(path = "/api")
 public class SaleController {
     
+    @Autowired private JwtService jwtService;
     @Autowired private SaleService saleService;
     @Autowired private UserService userService;
     @Autowired private ProductRepository productRepository;
 
     // Save the Sale information
     @PostMapping("/sale/save")
-    public ResponseEntity<Sale> createSale(@RequestBody SaleDTO saleDTO) {
+    public ResponseEntity<Sale> createSale(@RequestBody SaleDTO saleDTO, @RequestHeader("Authorization") String authHeader) {
         
-        User user = userService.getUserByEmail(saleDTO.getUser().getEmail());
+        // Extract email from token
+        String email = jwtService.extractEmailFromToken(authHeader);
+        User user = userService.getUserByEmail(email);
         if (user == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }

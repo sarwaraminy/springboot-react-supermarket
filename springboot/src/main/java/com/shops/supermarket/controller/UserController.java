@@ -1,9 +1,11 @@
 package com.shops.supermarket.controller;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,12 +21,17 @@ import com.shops.supermarket.dto.SignupRequest;
 import com.shops.supermarket.entity.User;
 import com.shops.supermarket.service.UserService;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+
 
 @RestController
 @RequestMapping(path="/auth")
 @CrossOrigin(origins="*")
 public class UserController {
     
+    private final String SECRET_KEY = "Love + Give + Serve + Enjoy this is First Rate Values";
+
     @Autowired private UserService userService;
 
     // get all user
@@ -62,13 +69,26 @@ public class UserController {
             User user = userOptional.get();
 
             // Create Response object
-            LoginResponse response = new LoginResponse();
-            response.setId(user.getId());
-            response.setEmail(user.getEmail());
-            response.setRole(user.getRole());
-            response.setFirstName(user.getFirstname());
-            response.setLastName(user.getLastname());
-            return ResponseEntity.ok(response);
+            LoginResponse loginResponse = new LoginResponse();
+            loginResponse.setId(user.getId());
+            loginResponse.setEmail(user.getEmail());
+            loginResponse.setRole(user.getRole());
+            loginResponse.setFirstName(user.getFirstname());
+            loginResponse.setLastName(user.getLastname());
+
+            String jwt = Jwts.builder()
+                    .setSubject(loginRequest.getEmail())
+                    .claim("pass", loginRequest.getPassword())
+                    .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // 1 day expiration
+                    .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+                    .compact();
+            
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "FRPBearer " + jwt);
+    
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(loginResponse);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
         }

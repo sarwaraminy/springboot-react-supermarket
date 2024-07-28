@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useUserEmail } from '../../auth/useUserEmail';
 import ProductForm from './ProductForm';
 import BuyList from './BuyList';
 import SearchProduct from './SearchProduct';
@@ -25,7 +24,7 @@ const ProductList = () => {
         discount: ''
     });
 
-    const loggedEmail = useUserEmail();
+    const token = localStorage.getItem('token');
 
     useEffect(() => {
         fetchProduct();
@@ -34,7 +33,11 @@ const ProductList = () => {
 
     const fetchProduct = async () => {
         try {
-            const response = await axios.get(`${process.env.REACT_APP_API_SERVER}/api/products/${loggedEmail}`);
+            const response = await axios.post(`${process.env.REACT_APP_API_SERVER}/api/products`, {}, {
+                headers: {
+                    'Authorization': `${token}`
+                }
+            });
             setProducts(response.data);
             setFilteredProductList(response.data);
         } catch (error) {
@@ -44,7 +47,11 @@ const ProductList = () => {
 
     const fetchCategories = async () => {
         try {
-            const response = await axios.get(`${process.env.REACT_APP_API_SERVER}/api/categories/${loggedEmail}`);
+            const response = await axios.post(`${process.env.REACT_APP_API_SERVER}/api/categories`, {}, {
+                headers: {
+                    'Authorization': `${token}`
+                }
+            });
             setCategories(response.data);
         } catch (error) {
             console.error('Error fetching categories:', error);

@@ -1,5 +1,7 @@
 import {useState} from 'react';
 import { useNavigate } from "react-router-dom";
+import { useUser } from './contexts/UserContext';
+import { useAuth } from './contexts/AuthContext';
 
 export const LoginPage = () => {
     const [emailValue, setEmailValue] = useState('');
@@ -7,25 +9,38 @@ export const LoginPage = () => {
     const [rememberMe, setRememberMe] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
+    const { updateUserData } = useUser();
+    const { login } = useAuth();
+
     const navigate = useNavigate();
 
     const handleLogin = async () => {
         setErrorMessage(''); 
 
+        const data = {
+            email: emailValue,
+            password: passwordValue
+        };
         try{
             const response = await fetch(`${process.env.REACT_APP_API_SERVER}/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ email: emailValue, password: passwordValue})
+                body: JSON.stringify(data)
             });
 
             if(response.ok){
                 const data = await response.json();
                 // Handle successful login (e.g, save token, navigate to dashboard)
-                localStorage.setItem('authToken', data.token);
-                localStorage.setItem('userEmail', emailValue);
+
+                login(emailValue, passwordValue);
+                updateUserData({
+                  userid: emailValue,
+                  pass: passwordValue
+                });
+                const token = response.headers.get('Authorization');
+                localStorage.setItem('token', token);
                 //localStorage.setItem('userRole', JSON.stringify(data.roles));
                 //console.log(data);
                 navigate('/', {

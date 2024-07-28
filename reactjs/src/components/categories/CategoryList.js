@@ -4,11 +4,11 @@ import { Table, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 import CategoryForm from './CategoryForm'
-import { useUserEmail } from '../../auth/useUserEmail'
 
 const CategoryList = () => {
     const [categories, setCategories] = useState([]);
-    const loggedEmail = useUserEmail(); // send the logged in user eamil to check user language
+
+    const token = localStorage.getItem('token');
 
     useEffect(() => {
         fetchCategory();
@@ -16,7 +16,11 @@ const CategoryList = () => {
 
     const fetchCategory = async () => {
         try{
-            const response = await axios.get(`${process.env.REACT_APP_API_SERVER}/api/categories/${loggedEmail}`);
+            const response = await axios.post(`${process.env.REACT_APP_API_SERVER}/api/categories`, {}, {
+                headers: {
+                    'Authorization': `${token}`
+                }
+            });
             setCategories(response.data);
         } catch (error){
             console.error('Error fetching products:', error);

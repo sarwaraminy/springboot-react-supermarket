@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useUserEmail } from '../../auth/useUserEmail';
+import axios from 'axios';
 
 const ProductForm = ({ fetchProduct }) => {
     const { id } = useParams();
@@ -13,18 +13,29 @@ const ProductForm = ({ fetchProduct }) => {
         description: ''
     });
     const [categories, setCategories] = useState([]);
-    const loggedEmail = useUserEmail();
+
+    const token = localStorage.getItem('token');
 
     useEffect(() => {
         if (id) {
-            fetch(`${process.env.REACT_APP_API_SERVER}/api/products/${id}`)
+            fetch(`${process.env.REACT_APP_API_SERVER}/api/products/${id}`, {
+                method: "POST",
+                headers: {
+                    'Authorization': `${token}`
+                }
+            })
                 .then(response => response.json())
                 .then(data => setProduct({
                     ...data,
                     category_id: data.category ? data.category.id : ''
                 }));
         }
-        fetch(`${process.env.REACT_APP_API_SERVER}/api/categories/${loggedEmail}`)
+        fetch(`${process.env.REACT_APP_API_SERVER}/api/categories`, {
+            method: "POST",
+            headers: {
+                'Authorization': `${token}`
+            }
+        })
             .then(response => response.json())
             .then(data => setCategories(data));
     }, [id]);

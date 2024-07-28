@@ -2,7 +2,6 @@ import React, { useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPrint, faReply } from '@fortawesome/free-solid-svg-icons';
 import useFormatter from '../hooks/useFormatter';
-import { useUserEmail } from '../../auth/useUserEmail';
 import axios from 'axios';
 
 const ProductInformation = ({ items, dcountSign, onResetBuyList, totalDiscount, grandTotal, getTotalPrk=0, getTax, totalItem, q_note, collect, payVal, showNote, onBack }) => {
@@ -10,11 +9,10 @@ const ProductInformation = ({ items, dcountSign, onResetBuyList, totalDiscount, 
     const { formatCurrency } = useFormatter();
     const printRef = useRef();
 
-    const loggedEmail = useUserEmail();
+    const token = localStorage.getItem('token');
     
     
     const [saleData, setSaleData] = useState({
-        user: {email: loggedEmail},
         totalAmount: grandTotal,
         paymentMethod: 'Cash',
         status: 'completed',
@@ -116,7 +114,11 @@ const ProductInformation = ({ items, dcountSign, onResetBuyList, totalDiscount, 
 
     const handleSaveSale = async () => {
         try { 
-            const response = await axios.post(`${process.env.REACT_APP_API_SERVER}/api/sale/save`, saleData);
+            const response = await axios.post(`${process.env.REACT_APP_API_SERVER}/api/sale/save`, saleData, {
+                headers: {
+                    'Authorization': `${token}`
+                }
+            });
             console.log('Sale saved:', response.data);
             onResetBuyList(); // Call the reset function
         } catch (error) {

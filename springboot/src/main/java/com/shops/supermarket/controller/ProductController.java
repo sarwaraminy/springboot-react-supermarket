@@ -17,12 +17,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.shops.supermarket.entity.Category;
 import com.shops.supermarket.entity.Product;
 import com.shops.supermarket.entity.User;
 import com.shops.supermarket.service.CategoryService;
+import com.shops.supermarket.service.JwtService;
 import com.shops.supermarket.service.ProductService;
 import com.shops.supermarket.service.TranslationService;
 import com.shops.supermarket.service.UserService;
@@ -35,17 +37,17 @@ import com.shops.supermarket.service.UserService;
 @CrossOrigin(origins="*")
 public class ProductController {
 
+    @Autowired JwtService jwtService;
     @Autowired private ProductService productService;
-
     @Autowired private TranslationService translationService;
-
     @Autowired private UserService userService;
-
     @Autowired private CategoryService categoryService;
 
     // get all user
-    @GetMapping("/products/{email}")
-    public ResponseEntity<List<Product>> getProductList(@PathVariable String email) {
+    @PostMapping("/products")
+    public ResponseEntity<List<Product>> getProductList(@RequestHeader("Authorization") String authHeader) {
+        // Extract email from token
+        String email = jwtService.extractEmailFromToken(authHeader);
         User user = userService.getUserByEmail(email);
         List<Product> products = productService.getAllProducts();
 

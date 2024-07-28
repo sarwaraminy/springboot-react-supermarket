@@ -6,13 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.shops.supermarket.entity.Category;
 import com.shops.supermarket.entity.User;
 import com.shops.supermarket.service.CategoryService;
+import com.shops.supermarket.service.JwtService;
 import com.shops.supermarket.service.TranslationService;
 import com.shops.supermarket.service.UserService;
 
@@ -22,13 +23,16 @@ import com.shops.supermarket.service.UserService;
 @CrossOrigin(origins="*")
 public class CategoryController {
     
+    @Autowired JwtService jwtService;
     @Autowired private CategoryService categoryService;
     @Autowired private UserService userService;
     @Autowired private TranslationService translationService;
 
     // get all Categories
-    @GetMapping("/categories/{email}")
-    public ResponseEntity<List<Category>> getProductList(@PathVariable String email) {
+    @PostMapping("/categories")
+    public ResponseEntity<List<Category>> getProductList(@RequestHeader("Authorization") String authHeader) {
+        // Extract email from token
+        String email = jwtService.extractEmailFromToken(authHeader);
         User user = userService.getUserByEmail(email);
         List<Category> categories = categoryService.getAllCategories();
 
