@@ -204,6 +204,7 @@ const ProductList = () => {
                                                     <td> {product.name} </td>
                                                     <td 
                                                       className="editProductBtn"
+                                                      title= {product.description ? product.description : "No Description found!"}
                                                       onClick={() => handleEditClick(product)}>
                                                         {product.categoryName ? product.categoryName : 'No Category'}
                                                       </td>

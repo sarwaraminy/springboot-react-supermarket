@@ -28,4 +28,14 @@ public class CategoryService {
 		Optional<Category> category = categoryRepository.findById(id);
 		return category.orElse(null);
 	}
+
+	// Add a new Category
+	public Category savCategory(Category category) {
+		return categoryRepository.save(category);
+	}
+
+	// delete a record
+	public void deleteCategory(Long id) {
+		categoryRepository.deleteById(id);
+	}
 }

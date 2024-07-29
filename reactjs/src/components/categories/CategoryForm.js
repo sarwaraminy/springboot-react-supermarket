@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Form, Button } from 'react-bootstrap';
+import { useParams } from 'react-router-dom';
 
-const CategoryForm = () => {
+const CategoryForm = ({ fetchCategory }) => {
     const { id } = useParams();
-    const navigate = useNavigate();
     const [category, setCategory] = useState({
         name: '',
         description: ''
     });
+    const [message, setMessage] = useState('');
 
     useEffect(() => {
         if (id) {
-            fetch(`/api/categories/${id}`)
+            fetch(`/api/category/${id}`)
                 .then(response => response.json())
                 .then(data => setCategory(data));
         }
@@ -26,7 +25,7 @@ const CategoryForm = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         const method = id ? 'PUT' : 'POST';
-        const url = id ? `/api/categories/${id}` : '/api/categories';
+        const url = id ? `${process.env.REACT_APP_API_SERVER}/api/category/${id}` : `${process.env.REACT_APP_API_SERVER}/api/category/add`;
         fetch(url, {
             method: method,
             headers: {
@@ -34,13 +33,19 @@ const CategoryForm = () => {
             },
             body: JSON.stringify(category)
         }).then(() => {
-            navigate('/categories');
+            fetchCategory();
+            setCategory({name:"", description:""});
+            setMessage("Record added Successfully");
         });
     }
 
     return (
         <div className="container-fluid">
-            <h1>Add New Category</h1>
+            <div className="row">
+                <div className="col-md-8"><h4>Add New Category</h4></div>
+                <div className="col-md-4 text-success">{message}</div>
+            </div>
+            
             <form id="category-form" onSubmit={handleSubmit}>
                 <div className="form-row align-items-end">
                     <div className="form-group col-md-3">
